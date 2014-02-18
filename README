@@ -1,0 +1,4 @@
+
+to try out, install dejagnu and run
+
+$> VERBOSE=1 runtest asparagus.exp example/example-test.exp

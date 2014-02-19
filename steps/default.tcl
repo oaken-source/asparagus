@@ -28,48 +28,48 @@ proc given_an_executable { exe args } {
 
 }
 
-proc when_I_run_with_parameters { exe pid parameters args } {
+proc when_I_run_with_parameters { exe pid prefix parameters args } {
 
   spawn $exe $parameters
 
-  pass_step "  When I run with parameters `$parameters'"
+  pass_step "  $prefix I run with parameters `$parameters'"
 
   dispatch_statement "$exe" $spawn_id "when" {*}"$args"
 
 }
 
-proc when_I_run { exe pid args } {
+proc when_I_run { exe pid prefix args } {
 
   spawn $exe
 
-  pass_step "  When I run"
+  pass_step "  $prefix I run"
 
   dispatch_statement "$exe" $spawn_id "when" {*}"$args"
 
 }
 
-proc when_I_send { exe pid str args } {
+proc when_I_send { exe pid prefix str args } {
 
   set spawn_id $pid
   send "$str"
 
-  pass_step "  And I send `[ string trim $str ]'"
+  pass_step "  $prefix I send `[ string trim $str ]'"
 
   dispatch_statement "$exe" $pid "when" {*}"$args"
 
 }
 
-proc then_I_should_see { exe pid str args } {
+proc then_I_should_see { exe pid prefix str args } {
 
   set spawn_id $pid
   expect {
 
     "$str" {
-      pass_step "  Then I should see `$str'"
+      pass_step "  $prefix I should see `$str'"
     }
 
     default {
-      fail_step "  Then I should see `$str'"
+      fail_step "  $prefix I should see `$str'"
       return
     }
 
@@ -79,18 +79,18 @@ proc then_I_should_see { exe pid str args } {
 
 }
 
-proc then_I_should_not_see { exe pid str args } {
+proc then_I_should_not_see { exe pid prefix str args } {
 
   set spawn_id $pid
   expect {
 
     "$str" {
-      fail_step "  Then I should not see `$str'"
+      fail_step "  $prefix I should not see `$str'"
       return
     }
 
     default {
-      pass_step "  Then I should not see `$str'"
+      pass_step "  $prefix I should not see `$str'"
     }
   
   }

@@ -26,10 +26,10 @@ source [file dirname [info script]]/lib/feedback.tcl
 source [file dirname [info script]]/lib/string.tcl
 
 # include the default step definitions
-source [file dirname [info script]]/steps/default.exp
+source [file dirname [info script]]/steps/default.tcl
 
 # include the step dispatcher - add calls to your step procs in here
-source [file dirname [info script]]/steps/dispatcher.exp
+source [file dirname [info script]]/steps/dispatcher.tcl
 
 # add your custom step definitions here, or add them to a dedicated file
 # and source this file here.

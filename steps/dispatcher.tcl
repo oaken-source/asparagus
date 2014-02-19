@@ -44,14 +44,14 @@ proc dispatch_statement { exe pid last_statement args } {
   if { [string length "$args"] == 0 } {
     return
   } elseif { [string_starts_with "$args" "when "] } {
-    dispatch_statement_when "$exe" $pid {*}[string_pop "$args" "when "]
+    dispatch_statement_when "$exe" $pid "When" {*}[string_pop "$args" "when "]
   } elseif { [string_starts_with "$args" "then "] } {
-    dispatch_statement_then "$exe" $pid {*}[string_pop "$args" "then "]    
+    dispatch_statement_then "$exe" $pid "Then" {*}[string_pop "$args" "then "]    
   } elseif { [string_starts_with "$args" "and "] } {
-    if { [string equals "$last_statement" "when"] } {
-      dispatch_statement_when "$exe" $pid {*}[string_pop "$args" "when "]
-    } elseif { [string equals "$last_statement" "then"] } {
-      dispatch_statement_then "$exe" $pid {*}[string_pop "$args" "then "]
+    if { [string equal "$last_statement" "when"] } {
+      dispatch_statement_when "$exe" $pid "And" {*}[string_pop "$args" "and "]
+    } elseif { [string equal "$last_statement" "then"] } {
+      dispatch_statement_then "$exe" $pid "And" {*}[string_pop "$args" "and "]
     } else {
       fail_fatal "`and' statement not implemented following `$last_statement'"
     }
@@ -62,14 +62,14 @@ proc dispatch_statement { exe pid last_statement args } {
 }
 
 # dispatch a `when' step - add your steps here
-proc dispatch_statement_when { exe pid args } {
+proc dispatch_statement_when { exe pid prefix args } {
 
   if { [string_starts_with "$args" "I run with parameters "] } {
-    when_I_run_with_parameters "$exe" $pid {*}[string_pop "$args" "I run with parameters "]
+    when_I_run_with_parameters "$exe" $pid "$prefix" {*}[string_pop "$args" "I run with parameters "]
   } elseif { [string_starts_with "$args" "I run "] } {
-    when_I_run "$exe" $pid {*}[string_pop "$args" "I run "]
+    when_I_run "$exe" $pid "$prefix" {*}[string_pop "$args" "I run "]
   } elseif { [string_starts_with "$args" "I send "] } {
-    when_I_send "$exe" $pid {*}[string_pop "$args" "I send "]
+    when_I_send "$exe" $pid "$prefix" {*}[string_pop "$args" "I send "]
   } else {
     fail_fatal "unknown `when' step near `$args'"
   }
@@ -77,12 +77,12 @@ proc dispatch_statement_when { exe pid args } {
 }
 
 # dispatch a `then' step - add your steps here
-proc dispatch_statement_then { exe pid args } {
+proc dispatch_statement_then { exe pid prefix args } {
 
   if { [string_starts_with "$args" "I should see "] } {
-    then_I_should_see "$exe" $pid {*}[string_pop "$args" "I should see "]
+    then_I_should_see "$exe" $pid "$prefix" {*}[string_pop "$args" "I should see "]
   } elseif { [string_starts_with "$args" "I should not see "] } {
-    then_I_should_not_see "$exe" $pid {*}[string_pop "$args" "I should not see "]
+    then_I_should_not_see "$exe" $pid "$prefix" {*}[string_pop "$args" "I should not see "]
   } else {
     fail_fatal "unknown `then' step near `$args'"
   }

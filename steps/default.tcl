@@ -30,7 +30,7 @@ proc given_an_executable { exe args } {
 
 proc when_I_run_with_parameters { exe pid prefix parameters args } {
 
-  spawn $exe $parameters
+  spawn $exe {*}$parameters
 
   pass_step "  $prefix I run with parameters `$parameters'"
 

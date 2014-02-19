@@ -1,49 +1,40 @@
 
-set timeout 1
+ ##############################################################################
+ #                                asparagus                                   #
+ #                                                                            #
+ #    Copyright (C) 2014  Andreas Grapentin                                   #
+ #                                                                            #
+ #    This program is free software: you can redistribute it and/or modify    #
+ #    it under the terms of the GNU General Public License as published by    #
+ #    the Free Software Foundation, either version 3 of the License, or       #
+ #    (at your option) any later version.                                     #
+ #                                                                            #
+ #    This program is distributed in the hope that it will be useful,         #
+ #    but WITHOUT ANY WARRANTY; without even the implied warranty of          #
+ #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           #
+ #    GNU General Public License for more details.                            #
+ #                                                                            #
+ #    You should have received a copy of the GNU General Public License       #
+ #    along with this program.  If not, see <http://www.gnu.org/licenses/>.   #
+ ############################################################################## 
 
-proc pass_step { str } {
-  
-  if { [ info exists ::env(VERBOSE) ] } {
-    send_user "$str\n"
-    pass "$str"
-  } else {
-    send_user "."
-    pass "."
-  }
+ # This is the asparagus testing framework backend TCL script.
+ ############################################################################## 
 
-}
+# include utility modules
+source [file dirname [info script]]/lib/feedback.tcl
+source [file dirname [info script]]/lib/string.tcl
 
-proc fail_step { str } {
-  
-  global test_name
-
-  if { [ info exists ::env(VERBOSE) ] } {
-    fail "$test_name : $str"
-  } else {
-    send_user "\n"
-    fail "$test_name : $str"
-  }
-
-}
-
-proc fail_fatal { str } {
-  
-  global test_name
-
-  send_user " !!!! FATAL : $test_name : [string range \"$str\" 0 60]...'\n"
-  exit 1
-
-}
-
+# this is the entry point to asparagus - each test should start with either
+#   `given' or `Given'
+proc Given { args } { given {*}"$args" }
 proc given { args } {
-
-  if { [string equal -length [string length "an executable "] "$args" "an executable "] } {
-    given_an_executable {*}[string range "$args" [string length "an executable "] [string length "$args"]]
+  if { [string_starts_with "$args" "an executable "] } {
+    given_an_executable {*}[string_pop "$args" "an executable "]
   } else {
     fail_step "syntax error near `$args'"
     return
   }
-
 }
 
 proc given_an_executable { exe args } {

@@ -25,113 +25,13 @@
 source [file dirname [info script]]/lib/feedback.tcl
 source [file dirname [info script]]/lib/string.tcl
 
-# this is the entry point to asparagus - each test should start with either
-#   `given' or `Given'
-proc Given { args } { given {*}"$args" }
-proc given { args } {
-  if { [string_starts_with "$args" "an executable "] } {
-    given_an_executable {*}[string_pop "$args" "an executable "]
-  } else {
-    fail_step "syntax error near `$args'"
-    return
-  }
-}
+# include the default step definitions
+source [file dirname [info script]]/steps/default.exp
 
-proc given_an_executable { exe args } {
+# include the step dispatcher - add calls to your step procs in here
+source [file dirname [info script]]/steps/dispatcher.exp
 
-  pass_step "Given an executable `$exe'"
-  dispatch_statement "$exe" 0 {*}"$args"
+# add your custom step definitions here, or add them to a dedicated file
+# and source this file here.
 
-}
 
-proc dispatch_statement { exe pid args } {
-  
-  if { [string length "$args"] == 0 } {
-    return
-  } elseif { [string equal -length [string length "when I run with parameters "] "$args" "when I run with parameters "] } {
-    when_I_run_with_parameters "$exe" $pid {*}[string range "$args" [string length "when I run with parameters "] [string length "$args"]]
-  } elseif { [string equal -length [string length "when I run "] "$args" "when I run "] } {
-    when_I_run "$exe" $pid {*}[string range "$args" [string length "when I run "] [string length "$args"]]
-  } elseif { [string equal -length [string length "and I send "] "$args" "and I send "] } {
-    and_I_send "$exe" $pid {*}[string range "$args" [string length "and I send "] [string length "$args"]]
-  } elseif { [string equal -length [string length "then I should see "] "$args" "then I should see "] } {
-    then_I_should_see "$exe" $pid {*}[string range "$args" [string length "then I should see "] [string length "$args"]]
-  } elseif { [string equal -length [string length "then I should not see "] "$args" "then I should not see "] } {
-    then_I_should_not_see "$exe" $pid {*}[string range "$args" [string length "then I should not see "] [string length "$args"]]
-  } else {
-    fail_fatal "syntax error near `$args'"
-  }
-
-}
-
-proc when_I_run_with_parameters { exe pid parameters args } {
-
-  spawn $exe $parameters
-
-  pass_step "  When I run with parameters `$parameters'"
-
-  dispatch_statement "$exe" $spawn_id {*}"$args"
-
-}
-
-proc when_I_run { exe pid args } {
-
-  spawn $exe
-
-  pass_step "  When I run"
-
-  dispatch_statement "$exe" $spawn_id {*}"$args"
-
-}
-
-proc and_I_send { exe pid str args } {
-
-  set spawn_id $pid
-  send "$str"
-
-  pass_step "  And I send `[ string trim $str ]'"
-
-  dispatch_statement "$exe" $pid {*}"$args"
-
-}
-
-proc then_I_should_see { exe pid str args } {
-
-  set spawn_id $pid
-  expect {
-
-    "$str" {
-      pass_step "  Then I should see `$str'"
-    }
-
-    default {
-      fail_step "  Then I should see `$str'"
-      return
-    }
-
-  }
-
-  
-  dispatch_statement "$exe" $pid {*}"$args"
-
-}
-
-proc then_I_should_not_see { exe pid str args } {
-
-  set spawn_id $pid
-  expect {
-
-    "$str" {
-      fail_step "  Then I should not see `$str'"
-      return
-    }
-
-    default {
-      pass_step "  Then I should not see `$str'"
-    }
-  
-  }
-
-  dispatch_statement "$exe" $pid {*}"$args"
-
-}

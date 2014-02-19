@@ -24,7 +24,7 @@
 # test if a string starts with a given string
 proc string_starts_with { haystack needle } {
 
-  return [string equal -length [string length "$needle"] "$haystack" "$needle"]
+  return [string equal -nocase -length [string length "$needle"] "$haystack" "$needle"]
 
 }
 

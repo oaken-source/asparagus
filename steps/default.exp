@@ -18,51 +18,83 @@
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.   #
  ############################################################################## 
 
- # This file contains the step pretty print methods of asparagus.
+ # This is the list of default steps provided by asparagus.
  ############################################################################## 
 
-# print a passed step to the output stream, cucumber style, and call `pass'
-#   if in verbose mode, print the complete step message, else only '.'
-proc pass_step { str } {
+proc given_an_executable { exe args } {
 
-  if { [ info exists ::env(VERBOSE) ] } {
-    send_user "$str\n"
-    pass "$str"
-  } else {
-    send_user "."
-    pass "."
-  }
+  pass_step "Given an executable `$exe'"
+  dispatch_statement "$exe" 0 "given" {*}"$args"
 
 }
 
-# print a failed step to the output stream, and call `fail'
-proc fail_step { str } {
+proc when_I_run_with_parameters { exe pid parameters args } {
 
-  global test_name
+  spawn $exe $parameters
 
-  if { [ info exists ::env(VERBOSE) ] } {
-    fail "$test_name : $str"
-  } else {
-    send_user "\n"
-    fail "$test_name : $str"
-  }
+  pass_step "  When I run with parameters `$parameters'"
+
+  dispatch_statement "$exe" $spawn_id "when" {*}"$args"
 
 }
 
-# this is used when something is wrong - syntax errors and the likes.
-#   print the message to the output stream and exit the test
-proc fail_fatal { str } {
+proc when_I_run { exe pid args } {
 
-  global test_name
+  spawn $exe
 
-  if { [ string length "$str" ] < 64 } {
-    send_user " !!!! FATAL : $test_name : $str\n"
-  } else {
-    send_user " !!!! FATAL : $test_name : [string range \"$str\" 0 60]...'\n"
-  }
+  pass_step "  When I run"
 
-  exit 1
+  dispatch_statement "$exe" $spawn_id "when" {*}"$args"
 
 }
 
+proc when_I_send { exe pid str args } {
 
+  set spawn_id $pid
+  send "$str"
+
+  pass_step "  And I send `[ string trim $str ]'"
+
+  dispatch_statement "$exe" $pid "when" {*}"$args"
+
+}
+
+proc then_I_should_see { exe pid str args } {
+
+  set spawn_id $pid
+  expect {
+
+    "$str" {
+      pass_step "  Then I should see `$str'"
+    }
+
+    default {
+      fail_step "  Then I should see `$str'"
+      return
+    }
+
+  }
+  
+  dispatch_statement "$exe" $pid "then" {*}"$args"
+
+}
+
+proc then_I_should_not_see { exe pid str args } {
+
+  set spawn_id $pid
+  expect {
+
+    "$str" {
+      fail_step "  Then I should not see `$str'"
+      return
+    }
+
+    default {
+      pass_step "  Then I should not see `$str'"
+    }
+  
+  }
+
+  dispatch_statement "$exe" $pid "then" {*}"$args"
+
+}

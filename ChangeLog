@@ -1,0 +1,9 @@
+
+2014-02-19  Andreas Grapentin  <andreas@grapentin.org>
+
+	* asparagus.exp: added initial version
+	* lib/feedback.tcl: likewise
+	* lib/string.tcl: likewise
+	* steps/dispatcher.tcl: likewise
+	* steps/default.tcl: likewise
+

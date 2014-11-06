@@ -16,10 +16,10 @@
  #                                                                            #
  #    You should have received a copy of the GNU General Public License       #
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.   #
- ############################################################################## 
+ ##############################################################################
 
  # This is the list of default steps provided by asparagus.
- ############################################################################## 
+ ##############################################################################
 
 proc given_an_executable { exe args } {
 
@@ -51,6 +51,7 @@ proc when_I_run { exe pid prefix args } {
 proc when_I_send { exe pid prefix str args } {
 
   set spawn_id $pid
+
   send "$str"
 
   pass_step "  $prefix I send `[ string trim $str ]'"
@@ -74,7 +75,7 @@ proc then_I_should_see { exe pid prefix str args } {
     }
 
   }
-  
+
   dispatch_statement "$exe" $pid "then" {*}"$args"
 
 }
@@ -92,7 +93,39 @@ proc then_I_should_not_see { exe pid prefix str args } {
     default {
       pass_step "  $prefix I should not see `$str'"
     }
-  
+
+  }
+
+  dispatch_statement "$exe" $pid "then" {*}"$args"
+
+}
+
+proc then_it_should_return { exe pid prefix code args } {
+
+  set spawn_id $pid
+
+  lassign [wait $pid] wait_pid spawnid os_error_flag value
+
+  if { $os_error_flag == 0 && $value == $code } {
+    pass_step "  $prefix it should return $code"
+  } else {
+    fail_step "  $prefix it should return $code"
+  }
+
+  dispatch_statement "$exe" $pid "then" {*}"$args"
+
+}
+
+proc then_it_should_not_return { exe pid prefix code args } {
+
+  set spawn_id $pid
+
+  lassign [wait $pid] wait_pid spawnid os_error_flag value
+
+  if { $os_error_flag == 0 && $value != $code } {
+    pass_step "  $prefix it should not return $code"
+  } else {
+    fail_step "  $prefix it should not return $code"
   }
 
   dispatch_statement "$exe" $pid "then" {*}"$args"

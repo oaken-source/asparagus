@@ -16,10 +16,10 @@
  #                                                                            #
  #    You should have received a copy of the GNU General Public License       #
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.   #
- ############################################################################## 
+ ##############################################################################
 
  # This script handles the step dispatching.
- ############################################################################## 
+ ##############################################################################
 
 # this is the entry point to asparagus - each test should start with either
 # `given' or `Given'. Dispatch what is `given' here and call the corresponding
@@ -37,7 +37,7 @@ proc given { args } {
 
 }
 
-# dispatch a statement of an asparagus test - can be either a `when' or a 
+# dispatch a statement of an asparagus test - can be either a `when' or a
 # `then' statement - an `and' statement mimics the statement before.
 proc dispatch_statement { exe pid last_statement args } {
 
@@ -46,7 +46,7 @@ proc dispatch_statement { exe pid last_statement args } {
   } elseif { [string_starts_with "$args" "when "] } {
     dispatch_statement_when "$exe" $pid "When" {*}[string_pop "$args" "when "]
   } elseif { [string_starts_with "$args" "then "] } {
-    dispatch_statement_then "$exe" $pid "Then" {*}[string_pop "$args" "then "]    
+    dispatch_statement_then "$exe" $pid "Then" {*}[string_pop "$args" "then "]
   } elseif { [string_starts_with "$args" "and "] } {
     if { [string equal "$last_statement" "when"] } {
       dispatch_statement_when "$exe" $pid "And" {*}[string_pop "$args" "and "]
@@ -83,6 +83,10 @@ proc dispatch_statement_then { exe pid prefix args } {
     then_I_should_see "$exe" $pid "$prefix" {*}[string_pop "$args" "I should see "]
   } elseif { [string_starts_with "$args" "I should not see "] } {
     then_I_should_not_see "$exe" $pid "$prefix" {*}[string_pop "$args" "I should not see "]
+  } elseif { [string_starts_with "$args" "it should return "] } {
+    then_it_should_return "$exe" $pid "$prefix" {*}[string_pop "$args" "it should return "]
+  } elseif { [string_starts_with "$args" "it should not return "] } {
+    then_it_should_not_return "$exe" $pid "$prefix" {*}[string_pop "$args" "it should not return "]
   } else {
     fail_fatal "unknown `then' step near `$args'"
   }

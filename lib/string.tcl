@@ -16,10 +16,10 @@
  #                                                                            #
  #    You should have received a copy of the GNU General Public License       #
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.   #
- ############################################################################## 
+ ##############################################################################
 
  # This file contains the string utilities used by asparagus.
- ############################################################################## 
+ ##############################################################################
 
 # test if a string starts with a given string
 proc string_starts_with { haystack needle } {
@@ -30,7 +30,7 @@ proc string_starts_with { haystack needle } {
 
 # remove a string from the start of another string
 proc string_pop { haystack needle } {
-  
+
   return [string range "$haystack" [string length "$needle"] [string length "$haystack"]]
 
 }

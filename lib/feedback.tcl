@@ -63,9 +63,9 @@ proc fail_fatal { str } {
   global test_name
 
   if { [ string length "$str" ] < 64 } {
-    send_user "\033\[00;32m!!!! FATAL : $test_name : $str\033\[0m\n"
+    send_user "\n\033\[00;31m!!!! FATAL : $test_name : $str\033\[0m\n"
   } else {
-    send_user "\033\[00;32m!!!! FATAL : $test_name : [string range \"$str\" 0 60]...\033\[0m\n"
+    send_user "\n\033\[00;31m!!!! FATAL : $test_name : [string range \"$str\" 0 60]...\033\[0m\n"
   }
 
   exit 1

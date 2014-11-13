@@ -131,3 +131,20 @@ proc then_it_should_not_return { exe pid prefix code args } {
   dispatch_statement "$exe" $pid "then" {*}"$args"
 
 }
+
+proc then_write_output_to_log { exe pid prefix args } {
+
+  set spawn_id $pid
+
+  match_max 65536
+
+  expect {
+    eof     {  }
+    timeout {  }
+  }
+
+  pass_step "  $prefix write output to log"
+
+  dispatch_statement "$exe" $pid "then" {*}"$args"
+
+}

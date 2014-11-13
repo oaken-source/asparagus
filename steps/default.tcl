@@ -136,12 +136,12 @@ proc then_write_output_to_log { exe pid prefix args } {
 
   set spawn_id $pid
 
-  match_max 65536
-
   expect {
     eof     {  }
     timeout {  }
   }
+
+  send_log "\n"
 
   pass_step "  $prefix write output to log"
 

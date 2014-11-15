@@ -136,12 +136,15 @@ proc then_write_output_to_log { exe pid prefix args } {
 
   set spawn_id $pid
 
-  expect {
-    eof     {  }
-    timeout {  }
-  }
+  while 1 {
 
-  send_log "\n"
+    expect {
+      -re "(\[^\r]*\)\r\n"  { }
+      eof                   { break }
+      timeout               { break }
+    }
+
+  }
 
   pass_step "  $prefix write output to log"
 

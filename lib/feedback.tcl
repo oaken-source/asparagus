@@ -54,6 +54,7 @@ proc fail_step { str } {
 
   global exit_status
   set exit_status 1
+
 }
 
 # this is used when something is wrong - syntax errors and the likes.
@@ -68,7 +69,29 @@ proc fail_fatal { str } {
     send_user "\n\033\[00;31m!!!! FATAL : $test_name : [string range \"$str\" 0 60]...\033\[0m\n"
   }
 
-  exit 1
+  incr_count FAIL
+
+  global exit_status
+  set exit_status 1
+
+}
+
+proc fail_unknown { str } {
+
+  global test_name
+
+  send_log "MISS: $test_name : $str\n"
+  if { [ info exists ::env(VERBOSE) ] } {
+    puts "\033\[00;33m$str\033\[0m"
+  } else {
+    puts -nonewline "\033\[00;33mU\033\[0m"
+    flush stdout
+  }
+
+  incr_count FAIL
+
+  global exit_status
+  set exit_status 1
 
 }
 

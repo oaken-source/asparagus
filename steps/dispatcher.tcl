@@ -31,7 +31,7 @@ proc given { args } {
   if { [string_starts_with "$args" "an executable "] } {
     given_an_executable {*}[string_pop "$args" "an executable "]
   } else {
-    fail_fatal "syntax error near `$args'"
+    fail_unknown "Given $args"
     return
   }
 
@@ -53,10 +53,10 @@ proc dispatch_statement { exe pid last_statement args } {
     } elseif { [string equal "$last_statement" "then"] } {
       dispatch_statement_then "$exe" $pid "And" {*}[string_pop "$args" "and "]
     } else {
-      fail_fatal "`and' statement not implemented following `$last_statement'"
+      fail_fatal "unexpected `and' statement after `$last_statement'"
     }
   } else {
-    fail_fatal "syntax error near `$args'"
+    fail_unknown "  $args"
   }
 
 }
@@ -71,7 +71,7 @@ proc dispatch_statement_when { exe pid prefix args } {
   } elseif { [string_starts_with "$args" "I send "] } {
     when_I_send "$exe" $pid "$prefix" {*}[string_pop "$args" "I send "]
   } else {
-    fail_fatal "unknown `when' step near `$args'"
+    fail_unknown "  When $args"
   }
 
 }
@@ -90,7 +90,7 @@ proc dispatch_statement_then { exe pid prefix args } {
   } elseif { [string_starts_with "$args" "write output to log"] } {
     then_write_output_to_log "$exe" $pid "$prefix" {*}[string_pop "$args" "write output to log"]
   } else {
-    fail_fatal "unknown `then' step near `$args'"
+    fail_unknown "  Then $args"
   }
 
 }

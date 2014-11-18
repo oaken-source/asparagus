@@ -24,7 +24,10 @@
 proc given_an_executable { exe args } {
 
   pass_step "Given an executable `$exe'"
+
   dispatch_statement "$exe" 0 "given" {*}"$args"
+
+  send_user "\n"
 
 }
 
@@ -33,6 +36,9 @@ proc when_I_run_with_parameters { exe pid prefix parameters args } {
   spawn $exe {*}$parameters
 
   pass_step "  $prefix I run with parameters `$parameters'"
+
+  # give the program a bit of time
+  after 10
 
   dispatch_statement "$exe" $spawn_id "when" {*}"$args"
 
@@ -43,6 +49,9 @@ proc when_I_run { exe pid prefix args } {
   spawn $exe
 
   pass_step "  $prefix I run"
+
+  # give the program a bit of time
+  after 10
 
   dispatch_statement "$exe" $spawn_id "when" {*}"$args"
 
@@ -104,12 +113,23 @@ proc then_it_should_return { exe pid prefix code args } {
 
   set spawn_id $pid
 
+  # consume input until eof, if any
+  if [catch { expect {
+    eof { }
+    timeout {
+      fail_step "  $prefix it should return $code"
+      return
+    }
+  } } ] { return }
+
+  # wait for spawned process
   lassign [wait $pid] wait_pid spawnid os_error_flag value
 
   if { $os_error_flag == 0 && $value == $code } {
     pass_step "  $prefix it should return $code"
   } else {
     fail_step "  $prefix it should return $code"
+    return
   }
 
   dispatch_statement "$exe" $pid "then" {*}"$args"
@@ -120,12 +140,23 @@ proc then_it_should_not_return { exe pid prefix code args } {
 
   set spawn_id $pid
 
+  # consume input until eof, if any
+  if [catch { expect {
+    eof { }
+    timeout {
+      fail_step "  $prefix it should return $code"
+      return
+    }
+  } } ] { return }
+
+  # wait for spawned process
   lassign [wait $pid] wait_pid spawnid os_error_flag value
 
   if { $os_error_flag == 0 && $value != $code } {
     pass_step "  $prefix it should not return $code"
   } else {
     fail_step "  $prefix it should not return $code"
+    return
   }
 
   dispatch_statement "$exe" $pid "then" {*}"$args"

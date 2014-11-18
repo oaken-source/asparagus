@@ -33,9 +33,12 @@ proc given_an_executable { exe args } {
 
 proc when_I_run_with_parameters { exe pid prefix parameters args } {
 
-  spawn $exe {*}$parameters
-
-  pass_step "  $prefix I run with parameters `$parameters'"
+  if { [ catch { spawn $exe {*}$parameters } ] } {
+    fail_step "  $prefix I run with parameters `$parameters'"
+    return
+  } else {
+    pass_step "  $prefix I run with parameters `$parameters'"
+  }
 
   # give the program a bit of time
   after 10
@@ -46,9 +49,12 @@ proc when_I_run_with_parameters { exe pid prefix parameters args } {
 
 proc when_I_run { exe pid prefix args } {
 
-  spawn $exe
-
-  pass_step "  $prefix I run"
+  if { [ catch { spawn $exe } ] } {
+    fail_step "  $prefix I run"
+    return
+  } else {
+    pass_step "  $prefix I run"
+  }
 
   # give the program a bit of time
   after 10

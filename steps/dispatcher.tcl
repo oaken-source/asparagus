@@ -87,8 +87,8 @@ proc dispatch_statement_then { exe pid prefix args } {
     then_it_should_return "$exe" $pid "$prefix" {*}[string_pop "$args" "it should return "]
   } elseif { [string_starts_with "$args" "it should not return "] } {
     then_it_should_not_return "$exe" $pid "$prefix" {*}[string_pop "$args" "it should not return "]
-  } elseif { [string_starts_with "$args" "write output to log"] } {
-    then_write_output_to_log "$exe" $pid "$prefix" {*}[string_pop "$args" "write output to log"]
+  } elseif { [string_starts_with "$args" "write the output to log"] } {
+    then_write_the_output_to_log "$exe" $pid "$prefix" {*}[string_pop "$args" "write the output to log"]
   } else {
     fail_unknown "  Then $args"
   }

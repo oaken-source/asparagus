@@ -126,7 +126,7 @@ proc then_it_should_return { exe pid prefix code args } {
       fail_step "  $prefix it should return $code"
       return
     }
-  } } ] { return }
+  } } ] { }
 
   # wait for spawned process
   lassign [wait $pid] wait_pid spawnid os_error_flag value
@@ -153,7 +153,7 @@ proc then_it_should_not_return { exe pid prefix code args } {
       fail_step "  $prefix it should return $code"
       return
     }
-  } } ] { return }
+  } } ] { }
 
   # wait for spawned process
   lassign [wait $pid] wait_pid spawnid os_error_flag value
@@ -169,7 +169,7 @@ proc then_it_should_not_return { exe pid prefix code args } {
 
 }
 
-proc then_write_output_to_log { exe pid prefix args } {
+proc then_write_the_output_to_log { exe pid prefix args } {
 
   set spawn_id $pid
 
@@ -183,7 +183,7 @@ proc then_write_output_to_log { exe pid prefix args } {
 
   }
 
-  pass_step "  $prefix write output to log"
+  pass_step "  $prefix write the output to log"
 
   dispatch_statement "$exe" $pid "then" {*}"$args"
 

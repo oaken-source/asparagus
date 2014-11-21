@@ -22,7 +22,10 @@
  ##############################################################################
 
 
-proc given_an_executable { exe args } {
+### given an executable ?exe?
+#
+# sets the global `asparagus_executable_path` to the given path and passes.
+proc given_an_executable { exe } {
 
   global asparagus_executable_path
 
@@ -32,7 +35,14 @@ proc given_an_executable { exe args } {
 
 }
 
-proc when_I_run_with_parameters { parameters args } {
+### when I run with parameters ?parameters?
+#
+# spawns the executable stored in `asparagus_executable_path`, which should be
+# set by `given an executable`, with the given cli parameters and stores the
+# spawn id in the global variable `asparagus_spawn_id`.
+#
+# If the spawn command throws an error, the step fails, otherwise is passes
+proc when_I_run_with_parameters { parameters } {
 
   global asparagus_executable_path
   global asparagus_spawn_id
@@ -40,8 +50,6 @@ proc when_I_run_with_parameters { parameters args } {
   if { [ catch { spawn $asparagus_executable_path {*}$parameters } msg ] } {
     fail_step "$msg"
     return
-  } else {
-    pass_step
   }
 
   # give the program a bit of time
@@ -49,9 +57,18 @@ proc when_I_run_with_parameters { parameters args } {
 
   set asparagus_spawn_id "$spawn_id"
 
+  pass_step
+
 }
 
-proc when_I_run { args } {
+### when I run
+#
+# spawns the executable stored in `asparagus_executable_path`, which should be
+# set by `given an executable`, and stores the spawn id in the global variable
+# `asparagus_spawn_id`.
+#
+# If the spawn command throws an error, the step fails, otherwise it passes
+proc when_I_run { } {
 
   global asparagus_executable_path
   global asparagus_spawn_id
@@ -59,8 +76,6 @@ proc when_I_run { args } {
   if { [ catch { spawn $asparagus_executable_path } msg ] } {
     fail_step "$msg"
     return
-  } else {
-    pass_step
   }
 
   # give the program a bit of time
@@ -68,9 +83,17 @@ proc when_I_run { args } {
 
   set asparagus_spawn_id "$spawn_id"
 
+  pass_step
+
 }
 
-proc when_I_send { str args } {
+### when I send ?string?
+#
+# send input to stdin of the process identified by the global variable
+# `asparagus_spawn_id`, which should be set by the `when I run` step family.
+#
+# If the send throws an error, the step fails, otherwise it passes
+proc when_I_send { str } {
 
   global asparagus_spawn_id
 
@@ -79,55 +102,80 @@ proc when_I_send { str args } {
   if { [ catch { send "$str" } msg ] } {
     fail_step "$msg"
     return
-  } else {
-    pass_step
   }
+
+  pass_step
 
 }
 
-proc then_I_should_see { str args } {
+### then I should see ?string?
+#
+# expect output from the process identified by the global variable
+# `asparagus_spawn_id`, which should by set by the `when I run` step family.
+#
+# If the expect throws an error or the string is not seen, the step fails,
+# otherwise it passes.
+proc then_I_should_see { str } {
 
   global asparagus_spawn_id
 
   set spawn_id "$asparagus_spawn_id"
 
-  expect {
+  if { [ catch { expect {
 
-    "$str" {
-      pass_step
-    }
-
+    "$str" { }
     default {
-      fail_step
+      fail_step "not seen"
       return
     }
 
+  } } msg ] } {
+    fail_step "$msg"
+    return
   }
+
+  pass_step
 
 }
 
-proc then_I_should_not_see { str args } {
+### then I should not see ?string?
+#
+# expect output from the process identified by the global variable
+# `asparagus_spawn_id`, which should be set by the `when I run` step family.
+#
+# If the expect throws an error, or the string is seen, the step fails,
+# otherwise it passes.
+proc then_I_should_not_see { str } {
 
   global asparagus_spawn_id
 
   set spawn_id "$asparagus_spawn_id"
 
-  expect {
+  if { [ catch { expect {
 
     "$str" {
-      fail_step
+      fail_step "seen"
       return
     }
+    default { }
 
-    default {
-      pass_step
-    }
-
+  } } msg ] } {
+    fail_step "$msg"
+    return
   }
+
+  pass_step
 
 }
 
-proc then_it_should_return { code args } {
+### then it should return ?code?
+#
+# expect the program identified by `asparagus_spawn_id` to terminate and
+# return the given return code.
+#
+# If the program does not terminate within a set time, or returns a code that
+# is not the given one, the step fails, otherwise it passes.
+proc then_it_should_return { code } {
 
   global asparagus_spawn_id
 
@@ -145,16 +193,23 @@ proc then_it_should_return { code args } {
   # wait for spawned process
   lassign [wait $asparagus_spawn_id] wait_pid spawnid os_error_flag value
 
-  if { $os_error_flag == 0 && $value == $code } {
-    pass_step
-  } else {
+  if { $os_error_flag != 0 || $value != $code } {
     fail_step "returned $os_error_flag : $value"
     return
   }
 
+  pass_step
+
 }
 
-proc then_it_should_not_return { code args } {
+### then it should not return ?code?
+#
+# expect the program identified by `asparagus_spawn_id` to terminate and
+# return the given return code.
+#
+# If the program does not terminate within a set time, or returns a code that
+# is equal to the given one, the step fails, otherwise it passes.
+proc then_it_should_not_return { code } {
 
   global asparagus_spawn_id
 
@@ -172,16 +227,20 @@ proc then_it_should_not_return { code args } {
   # wait for spawned process
   lassign [wait $asparagus_spawn_id] wait_pid spawnid os_error_flag value
 
-  if { $os_error_flag == 0 && $value != $code } {
-    pass_step
-  } else {
+  if { $os_error_flag != 0 || $value == $code } {
     fail_step "returned $os_error_flag : $value"
     return
   }
 
+  pass_step
+
 }
 
-proc then_write_the_output_to_log { args } {
+### then write the output to log
+#
+# capture all output produced by the spawned process identified by
+# `asparagus_spawn_id` and send it to the log file and pass.
+proc then_write_the_output_to_log { } {
 
   global asparagus_spawn_id
 

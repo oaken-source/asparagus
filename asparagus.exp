@@ -24,6 +24,7 @@
 # include utility modules
 source [file dirname [info script]]/lib/feedback.tcl
 source [file dirname [info script]]/lib/string.tcl
+source [file dirname [info script]]/lib/globals.tcl
 
 # include the default step definitions
 source [file dirname [info script]]/steps/default.tcl

@@ -18,77 +18,22 @@
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.   #
  ##############################################################################
 
- # This file contains the step pretty print methods of asparagus.
+ # This file lists the global state information of asparagus, mainly for
+ # reference.
  ##############################################################################
 
-# print a passed step to the output stream, cucumber style, and call `pass'
-#   if in verbose mode, print the complete step message, else only '.'
-proc pass_step { } {
+## the path to the current executable
+# used by "Given an executable"
+global asparagus_executable_path
 
-  global asparagus_current_step_type
-  global asparagus_current_step
+## the type of the latest executed step
+# can be "Given" "When" or "Then"
+global asparagus_step_type
 
-  set msg "$asparagus_current_step_type $asparagus_current_step"
+## the actual type of the currently executing step
+# can be "Given" "  When" "  Then" or "  And"
+global asparagus_current_step_type
 
-  send_log "PASS: $msg\n"
-  if { [ info exists ::env(VERBOSE) ] } {
-    puts "\033\[00;32m$msg\033\[0m"
-  } else {
-    puts -nonewline "\033\[00;32m.\033\[0m"
-    flush stdout
-  }
-
-  incr_count PASS
-
-}
-
-# print a failed step to the output stream, and call `fail'
-proc fail_step { str } {
-
-  global asparagus_current_step_type
-  global asparagus_current_step
-
-  set msg "$asparagus_current_step_type $asparagus_current_step"
-
-  if { [ string length $str ] } {
-    set msg "$msg: $str"
-  }
-
-  send_log "FAIL: $msg\n"
-  if { [ info exists ::env(VERBOSE) ] } {
-    puts "\033\[00;31m$msg\033\[0m"
-  } else {
-    puts -nonewline "\033\[00;31mF\033\[0m"
-    flush stdout
-  }
-
-  incr_count FAIL
-
-  global exit_status
-  set exit_status 1
-
-}
-
-proc fail_unknown { } {
-
-  global asparagus_current_step_type
-  global asparagus_current_step
-
-  set msg "$asparagus_current_step_type $asparagus_current_step"
-
-  send_log "MISS: $msg\n"
-  if { [ info exists ::env(VERBOSE) ] } {
-    puts "\033\[00;33m$msg\033\[0m"
-  } else {
-    puts -nonewline "\033\[00;33mU\033\[0m"
-    flush stdout
-  }
-
-  incr_count FAIL
-
-  global exit_status
-  set exit_status 1
-
-}
-
-
+## the string form of the current step
+# used by the *_send procs
+global asparagus_current_step

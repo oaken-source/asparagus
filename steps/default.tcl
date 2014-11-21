@@ -21,157 +21,171 @@
  # This is the list of default steps provided by asparagus.
  ##############################################################################
 
+
 proc given_an_executable { exe args } {
 
-  pass_step "Given an executable `$exe'"
+  global asparagus_executable_path
 
-  dispatch_statement "$exe" 0 "given" {*}"$args"
+  set asparagus_executable_path "$exe"
 
-  send_user "\n"
+  pass_step
 
 }
 
-proc when_I_run_with_parameters { exe pid prefix parameters args } {
+proc when_I_run_with_parameters { parameters args } {
 
-  if { [ catch { spawn $exe {*}$parameters } ] } {
-    fail_step "  $prefix I run with parameters `$parameters'"
+  global asparagus_executable_path
+  global asparagus_spawn_id
+
+  if { [ catch { spawn $asparagus_executable_path {*}$parameters } msg ] } {
+    fail_step "$msg"
     return
   } else {
-    pass_step "  $prefix I run with parameters `$parameters'"
+    pass_step
   }
 
   # give the program a bit of time
   after 10
 
-  dispatch_statement "$exe" $spawn_id "when" {*}"$args"
+  set asparagus_spawn_id "$spawn_id"
 
 }
 
-proc when_I_run { exe pid prefix args } {
+proc when_I_run { args } {
 
-  if { [ catch { spawn $exe } ] } {
-    fail_step "  $prefix I run"
+  global asparagus_executable_path
+  global asparagus_spawn_id
+
+  if { [ catch { spawn $asparagus_executable_path } msg ] } {
+    fail_step "$msg"
     return
   } else {
-    pass_step "  $prefix I run"
+    pass_step
   }
 
   # give the program a bit of time
   after 10
 
-  dispatch_statement "$exe" $spawn_id "when" {*}"$args"
+  set asparagus_spawn_id "$spawn_id"
 
 }
 
-proc when_I_send { exe pid prefix str args } {
+proc when_I_send { str args } {
 
-  set spawn_id $pid
+  global asparagus_spawn_id
 
-  send "$str"
+  set spawn_id "$asparagus_spawn_id"
 
-  pass_step "  $prefix I send `[ string trim $str ]'"
-
-  dispatch_statement "$exe" $pid "when" {*}"$args"
+  if { [ catch { send "$str" } msg ] } {
+    fail_step "$msg"
+    return
+  } else {
+    pass_step
+  }
 
 }
 
-proc then_I_should_see { exe pid prefix str args } {
+proc then_I_should_see { str args } {
 
-  set spawn_id $pid
+  global asparagus_spawn_id
+
+  set spawn_id "$asparagus_spawn_id"
+
   expect {
 
     "$str" {
-      pass_step "  $prefix I should see `$str'"
+      pass_step
     }
 
     default {
-      fail_step "  $prefix I should see `$str'"
+      fail_step
       return
     }
 
   }
 
-  dispatch_statement "$exe" $pid "then" {*}"$args"
-
 }
 
-proc then_I_should_not_see { exe pid prefix str args } {
+proc then_I_should_not_see { str args } {
 
-  set spawn_id $pid
+  global asparagus_spawn_id
+
+  set spawn_id "$asparagus_spawn_id"
+
   expect {
 
     "$str" {
-      fail_step "  $prefix I should not see `$str'"
+      fail_step
       return
     }
 
     default {
-      pass_step "  $prefix I should not see `$str'"
+      pass_step
     }
 
   }
 
-  dispatch_statement "$exe" $pid "then" {*}"$args"
-
 }
 
-proc then_it_should_return { exe pid prefix code args } {
+proc then_it_should_return { code args } {
 
-  set spawn_id $pid
+  global asparagus_spawn_id
+
+  set spawn_id "$asparagus_spawn_id"
 
   # consume input until eof, if any
   if [catch { expect {
     eof { }
     timeout {
-      fail_step "  $prefix it should return $code"
+      fail_step "timed out"
       return
     }
   } } ] { }
 
   # wait for spawned process
-  lassign [wait $pid] wait_pid spawnid os_error_flag value
+  lassign [wait $asparagus_spawn_id] wait_pid spawnid os_error_flag value
 
   if { $os_error_flag == 0 && $value == $code } {
-    pass_step "  $prefix it should return $code"
+    pass_step
   } else {
-    fail_step "  $prefix it should return $code"
+    fail_step "returned $os_error_flag : $value"
     return
   }
 
-  dispatch_statement "$exe" $pid "then" {*}"$args"
-
 }
 
-proc then_it_should_not_return { exe pid prefix code args } {
+proc then_it_should_not_return { code args } {
 
-  set spawn_id $pid
+  global asparagus_spawn_id
+
+  set spawn_id $asparagus_spawn_id
 
   # consume input until eof, if any
   if [catch { expect {
     eof { }
     timeout {
-      fail_step "  $prefix it should return $code"
+      fail_step "timed out"
       return
     }
   } } ] { }
 
   # wait for spawned process
-  lassign [wait $pid] wait_pid spawnid os_error_flag value
+  lassign [wait $asparagus_spawn_id] wait_pid spawnid os_error_flag value
 
   if { $os_error_flag == 0 && $value != $code } {
-    pass_step "  $prefix it should not return $code"
+    pass_step
   } else {
-    fail_step "  $prefix it should not return $code"
+    fail_step "returned $os_error_flag : $value"
     return
   }
 
-  dispatch_statement "$exe" $pid "then" {*}"$args"
-
 }
 
-proc then_write_the_output_to_log { exe pid prefix args } {
+proc then_write_the_output_to_log { args } {
 
-  set spawn_id $pid
+  global asparagus_spawn_id
+
+  set spawn_id $asparagus_spawn_id
 
   while 1 {
 
@@ -183,8 +197,6 @@ proc then_write_the_output_to_log { exe pid prefix args } {
 
   }
 
-  pass_step "  $prefix write the output to log"
-
-  dispatch_statement "$exe" $pid "then" {*}"$args"
+  pass_step
 
 }

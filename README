@@ -82,8 +82,9 @@ Or mail us at <asparagus@grapentin.org>!
  project, and add `tests/Makefile' to AC_CONFIG_FILES, and add the tests
  directory to SUBDIRS in your top-level Makefile.am.
 
- In the tests directory, create a file Makefile.am, with at least the
- following contents:
+ Copy asparagus.exp, the lib directory and the steps directory into the tests
+ directoy, and in the tests directory, create a file Makefile.am, with at
+ least the following contents:
 
   EXTRA_DIST = asparagus.exp lib/feedback.tcl lib/globals.tcl lib/string.tcl \
                steps/dispatcher.tcl steps/default.tcl \

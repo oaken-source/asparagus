@@ -4,4 +4,5 @@ testrun.log
 testrun.sum
 
 # locally used helper scripts
+package.sh
 integrate.sh

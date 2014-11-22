@@ -1,9 +1,23 @@
 
+2014-11-11  Andreas Grapentin  <andreas@grapentin.org>
+
+	* asparagus.exp: reorganized imports and added custom step example
+	* example/example-test.exp: updated to new format (removed \\'s)
+	* lib/feedback.tcl: coloured output, taking output strings from global
+	state variables improving log quality
+	* lib/globals.tcl: added for reference of global variables
+	* steps/default.tcl: added new steps for return code checking and
+	output capture, changed the way steps work to standalone functions for
+	'given', 'when', 'then' and 'and' and improved failure state checking
+	* steps/dispatcher.tcl: added interface to add steps to the testsuite,
+	added more generic string dispatching
+
 2014-02-19  Andreas Grapentin  <andreas@grapentin.org>
 
 	* asparagus.exp: added initial version
+	* example/example-test.exp: likewise
 	* lib/feedback.tcl: likewise
 	* lib/string.tcl: likewise
-	* steps/dispatcher.tcl: likewise
 	* steps/default.tcl: likewise
+	* steps/dispatcher.tcl: likewise
 

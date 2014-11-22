@@ -1,4 +1,210 @@
 
-to try out, install dejagnu and run
+asparagus - a framework for human-readable testsuites
+-----------------------------------------------------
 
-$> VERBOSE=1 runtest asparagus.exp example/example-test.exp
+Copyright (C) 2014 Andreas Grapentin
+See the end for copying conditions
+
+Please send asparagus bug reports via
+<http://github.com/andy-graprof/asparagus/issues/>.
+
+Or mail us at <asparagus@grapentin.org>!
+
+ Table of Contents:
+  1. Introduction
+  2. Integration
+  3. Writing Tests
+  4. Supported Steps
+  5. Writing Step Definitions
+
+
+1. Introduction
+---------------
+
+ Asparagus has been designed to make testing simple. It is supposed to provide
+ a means of defining tests via a middleware that allows the definition of test
+ cases to be as human-readable as possible, while being as lightweight as
+ possible.
+ For the development of asparagus, we drew inspiration from the testing frame-
+ work for web applications called cucumber, where tests could be defined in
+ human-readable paragraphs, which were internally mapped to a selection of
+ step definitions, which were then executed in order and verified that the
+ assertions made by the tests were met. With asparagus, we wanted to achieve
+ the same effect, only for command line applications, in order to bring the
+ elegance of the human-readable testing approach down to a new level.
+ In order to make integrating asparagus into existing projects as easy as
+ possible, we wanted to avoid using powerful general-purpose programming
+ languages like python or ruby for the step definitions, and instead settled
+ for the TCL/Expect/DejaGnu testing framework and implemented our middleware
+ on top of this stack.
+
+ The rest of this doucument describes how to use asparagus in your own
+ projets, and how to write yor own tests. For a quick reference, take a look
+ at the example test definition in example/example-text.exp, and run it via
+
+  $> VERBOSE=1 runtest asparagus.exp example/example-test.exp
+
+ where the runtest binary is provided by DejaGnu.
+
+ The information in this file, as well as some additional documentation, can
+ be found on <http://asparagus.grapentin.org>.
+
+ If you have found a bug, please do not hesitate to report it at asparagus'
+ bug tracker found on <http://github.com/asparagus/issues>.
+
+ If you have any suggestions, on how asparagus can be improved, or want to
+ submit a bug directly, or just want to chat with us, send an email to
+ <asparagus@grapentin.org>.
+
+ If you want to support asparagus, or its developers, then feel free to do so.
+ We can always use a hand maintaining and improving the project, or its
+ representaion.
+
+
+2. Integration
+--------------
+
+ To run a single test file, run the following command with dejagnu installed:
+
+  $> runtest asparagus.exp <testfile>
+
+ Use this schema to implement a `make check` step for your makefiles.
+
+ Integration with autoconf/automake managed projects is straightforward as
+ well. Just add the following block to your configure.ac:
+
+  if test x"$DEJAGNU" = x; then
+    DEJAGNU="\$(top_srcdir)/tests/asparagus.exp"
+  fi
+  AC_SUBST(DEJAGNU)
+
+ and create at least one test directory, for example called `tests' to your
+ project, and add `tests/Makefile' to AC_CONFIG_FILES, and add the tests
+ directory to SUBDIRS in your top-level Makefile.am.
+
+ In the tests directory, create a file Makefile.am, with at least the
+ following contents:
+
+  EXTRA_DIST = asparagus.exp lib/feedback.tcl lib/globals.tcl lib/string.tcl \
+               steps/dispatcher.tcl steps/default.tcl \
+	       [ ... your test files here ...]
+
+  AUTOMAKE_OPTIONS = dejagnu
+
+  export DEJAGNU
+
+ In order to be executed, the tests files should be in subdirectories to the
+ tests directory, named $DEJATOOL-<test_group>/<test_subgroup>.exe, where
+ DEJATOOL defaults to the project name, unless you override it, and test_group
+ and test_subgroup identify the tests defined in the test file semantically,
+ which allows nice test grouping.
+
+ The tests should be executed when you run `make check` or `make distcheck`.
+
+
+3. Writing Tests
+----------------
+
+ Test definitions are separated into steps, which can be separated into three
+ groups.
+
+ `Given' steps are usually the first step of a test, and describe the
+ prerequesites for the following steps, for example:
+
+  Given an executable "ls"
+
+ `When' steps describe events that usually describe input to the tested
+ entity. An example that is commonly used in asparagus is:
+
+  When I run with parameters "-a"
+
+ `Then' steps describe assertions, that result from the preceding When steps.
+ A common example is:
+
+  Then It should return 0
+
+ There is one more step family, which is the `And' steps. And steps mimic the
+ family preceding the current step, which allows for more pleasing semantic
+ test definitions.
+
+ Chaining these steps together creates a test, where each step may either fail
+ or succeed. An example for a complete test would be:
+
+  Given an executable "ls"
+    When I run with parameters "-a"
+    Then I should see ".."
+    And it should return 0
+
+ The step keywords Given, When, Then and And may be written all lowercase, or
+ with an uppercase first letter.
+
+
+4. Supported Steps
+------------------
+
+ Asparagus comes with a number of different steps which are supported by
+ default, which are outlined below. For code reference, see the file
+ steps/default.tcl.
+
+  Given an executable ?exe?
+    This step sets the currently used executable, which is used by the
+    `When I run' family of steps.
+
+  When I run with parameters ?parameters?
+    This step tries to spawn a process from the currently set executable
+    while passing the given command line arguments.
+
+  When I run
+    This step tries to spawn a process from the currently set executable.
+
+  When I send ?string?
+    This step sends the given input to the stdin of the spawned process.
+
+  Then I should see ?string?
+    This step asserts that the given string is part of the output of the
+    spawned process. All output until the given string is found is discarded.
+
+  Then I should not see ?string?
+    This step asserts that the given string is not part of the output of the
+    spawned process. All output in the expect buffer is discarded.
+
+  Then it should return ?code?
+    This step asserts that the spawned process terminates with the given
+    return code.
+
+  Then it should not return ?code?
+    This step asserts that the spawned process terminates with another than
+    the given return code.
+
+  Then write the output to log
+    This step captures all output produced by the spawned process and sends
+    it to the log file until the process terminates.
+
+
+5. Writing Step Definitions
+---------------------------
+
+ Extending the functionality of asparagus with custom step definitions
+ requires some expertise with expect and tcl. For some examples, see
+ steps/default.tcl.
+
+ What you need to do, is create TCL procedures for the behaviour of your steps
+ and call `asparagus_register_step <your step proc> "<your step name>"` from
+ a file sourced by asparagus.exp.
+ See asparagus.exp for an example.
+
+
+----------------------------------------------------------------------
+Copyright information:
+
+Copyright (C) 2014 Andreas Grapentin
+
+   Permission is granted to anyone to make or distribute verbatim copies
+   of this document as received, in any medium, provided that the
+   copyright notice and this permission notice are preserved,
+   thus giving the recipient permission to redistribute in turn.
+
+   Permission is granted to distribute modified versions
+   of this document, or of portions of it,
+   under the above conditions, provided also that they
+   carry prominent notices stating who last changed them.

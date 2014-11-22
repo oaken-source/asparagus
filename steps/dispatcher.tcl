@@ -36,39 +36,7 @@ proc given { args } {
   set asparagus_current_step_type "Given"
   set asparagus_current_step $args
 
-  if { [string_starts_with "$args" "an executable"] } {
-    given_an_executable {*}[string_pop "$args" "an executable"]
-  } else {
-    fail_unknown
-  }
-
-}
-
-proc Then { args } { then {*}"$args" }
-
-proc then { args } {
-
-  global asparagus_step_type
-  global asparagus_current_step_type
-  global asparagus_current_step
-
-  set asparagus_step_type "Then"
-  set asparagus_current_step_type "  Then"
-  set asparagus_current_step $args
-
-  if { [string_starts_with "$args" "I should see"] } {
-    then_I_should_see {*}[string_pop "$args" "I should see"]
-  } elseif { [string_starts_with "$args" "I should not see"] } {
-    then_I_should_not_see {*}[string_pop "$args" "I should not see"]
-  } elseif { [string_starts_with "$args" "it should return"] } {
-    then_it_should_return {*}[string_pop "$args" "it should return"]
-  } elseif { [string_starts_with "$args" "it should not return"] } {
-    then_it_should_not_return {*}[string_pop "$args" "it should not return"]
-  } elseif { [string_starts_with "$args" "write the output to log"] } {
-    then_write_the_output_to_log {*}[string_pop "$args" "write the output to log"]
-  } else {
-    fail_unknown
-  }
+  dispatch_step {*}"given $args"
 
 }
 
@@ -84,15 +52,23 @@ proc when { args } {
   set asparagus_current_step_type "  When"
   set asparagus_current_step $args
 
-  if { [ string_starts_with "$args" "I run with parameters" ] } {
-    when_I_run_with_parameters {*}[string_pop "$args" "I run with parameters"]
-  } elseif { [string_starts_with "$args" "I run"] } {
-    when_I_run {*}[string_pop "$args" "I run"]
-  } elseif { [string_starts_with "$args" "I send"] } {
-    when_I_send {*}[string_pop "$args" "I send"]
-  } else {
-    fail_unknown
-  }
+  dispatch_step {*}"when $args"
+
+}
+
+proc Then { args } { then {*}"$args" }
+
+proc then { args } {
+
+  global asparagus_step_type
+  global asparagus_current_step_type
+  global asparagus_current_step
+
+  set asparagus_step_type "Then"
+  set asparagus_current_step_type "  Then"
+  set asparagus_current_step $args
+
+  dispatch_step {*}"then $args"
 
 }
 
@@ -107,15 +83,29 @@ proc and { args } {
   set asparagus_current_step_type "  And"
   set asparagus_current_step $args
 
-  if { ! [ string compare "Given" $asparagus_step_type ] } {
-    given {*}"$args"
-  } elseif { ! [ string compare "Then" $asparagus_step_type ] } {
-    then {*}"$args"
-  } elseif { ! [ string compare "When" $asparagus_step_type ] } {
-    when {*}"$args"
-  } else {
-    fail_unknown
-  }
+  dispatch_step {*}"$asparagus_step_type $args"
 
 }
 
+proc dispatch_step { args } {
+
+  global asparagus_step_definitions
+
+  foreach { func step } $asparagus_step_definitions {
+    if { [ string_starts_with "$args" "$step" ] } {
+      $func {*}[ string_pop "$args" "$step" ]
+      return
+    }
+  }
+
+  fail_unknown
+
+}
+
+proc register_step { func step } {
+
+  global asparagus_step_definitions
+
+  lappend asparagus_step_definitions $func $step
+
+}

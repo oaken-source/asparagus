@@ -25,6 +25,7 @@
 ### given an executable ?exe?
 #
 # sets the global `asparagus_executable_path` to the given path and passes.
+register_step given_an_executable "given an executable"
 proc given_an_executable { exe } {
 
   global asparagus_executable_path
@@ -42,10 +43,13 @@ proc given_an_executable { exe } {
 # spawn id in the global variable `asparagus_spawn_id`.
 #
 # If the spawn command throws an error, the step fails, otherwise is passes
+register_step when_I_run_with_parameters "when I run with parameters"
 proc when_I_run_with_parameters { parameters } {
 
   global asparagus_executable_path
   global asparagus_spawn_id
+
+  set asparagus_spawn_id ""
 
   if { [ catch { spawn $asparagus_executable_path {*}$parameters } msg ] } {
     fail_step "$msg"
@@ -68,10 +72,13 @@ proc when_I_run_with_parameters { parameters } {
 # `asparagus_spawn_id`.
 #
 # If the spawn command throws an error, the step fails, otherwise it passes
+register_step when_I_run "when I run"
 proc when_I_run { } {
 
   global asparagus_executable_path
   global asparagus_spawn_id
+
+  set asparagus_spawn_id ""
 
   if { [ catch { spawn $asparagus_executable_path } msg ] } {
     fail_step "$msg"
@@ -93,9 +100,15 @@ proc when_I_run { } {
 # `asparagus_spawn_id`, which should be set by the `when I run` step family.
 #
 # If the send throws an error, the step fails, otherwise it passes
+register_step when_I_send "when I send"
 proc when_I_send { str } {
 
   global asparagus_spawn_id
+
+  if { ! [ string length $asparagus_spawn_id ] } {
+    fail_step "not open"
+    return
+  }
 
   set spawn_id "$asparagus_spawn_id"
 
@@ -115,9 +128,15 @@ proc when_I_send { str } {
 #
 # If the expect throws an error or the string is not seen, the step fails,
 # otherwise it passes.
+register_step then_I_should_see "then I should see"
 proc then_I_should_see { str } {
 
   global asparagus_spawn_id
+
+  if { ! [ string length $asparagus_spawn_id ] } {
+    fail_step "not open"
+    return
+  }
 
   set spawn_id "$asparagus_spawn_id"
 
@@ -145,9 +164,15 @@ proc then_I_should_see { str } {
 #
 # If the expect throws an error, or the string is seen, the step fails,
 # otherwise it passes.
+register_step then_I_should_not_see "then I should not see"
 proc then_I_should_not_see { str } {
 
   global asparagus_spawn_id
+
+  if { ! [ string length $asparagus_spawn_id ] } {
+    fail_step "not open"
+    return
+  }
 
   set spawn_id "$asparagus_spawn_id"
 
@@ -175,14 +200,20 @@ proc then_I_should_not_see { str } {
 #
 # If the program does not terminate within a set time, or returns a code that
 # is not the given one, the step fails, otherwise it passes.
+register_step then_it_should_return "then it should return"
 proc then_it_should_return { code } {
 
   global asparagus_spawn_id
 
+  if { ! [ string length $asparagus_spawn_id ] } {
+    fail_step "not open"
+    return
+  }
+
   set spawn_id "$asparagus_spawn_id"
 
   # consume input until eof, if any
-  if [catch { expect {
+  if [ catch { expect {
     eof { }
     timeout {
       fail_step "timed out"
@@ -209,9 +240,15 @@ proc then_it_should_return { code } {
 #
 # If the program does not terminate within a set time, or returns a code that
 # is equal to the given one, the step fails, otherwise it passes.
+register_step then_it_should_not_return "then it should not return"
 proc then_it_should_not_return { code } {
 
   global asparagus_spawn_id
+
+  if { ! [ string length $asparagus_spawn_id ] } {
+    fail_step "not open"
+    return
+  }
 
   set spawn_id $asparagus_spawn_id
 
@@ -240,9 +277,15 @@ proc then_it_should_not_return { code } {
 #
 # capture all output produced by the spawned process identified by
 # `asparagus_spawn_id` and send it to the log file and pass.
+register_step then_write_the_output_to_log "then write the output to log"
 proc then_write_the_output_to_log { } {
 
   global asparagus_spawn_id
+
+  if { ! [ string length $asparagus_spawn_id ] } {
+    fail_step "not open"
+    return
+  }
 
   set spawn_id $asparagus_spawn_id
 

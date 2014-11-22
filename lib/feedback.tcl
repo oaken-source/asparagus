@@ -28,7 +28,9 @@ proc pass_step { } {
   global asparagus_current_step_type
   global asparagus_current_step
 
-  set msg "$asparagus_current_step_type $asparagus_current_step"
+  set str [ join "$asparagus_current_step" ]
+
+  set msg "$asparagus_current_step_type $str"
 
   send_log "PASS: $msg\n"
   if { [ info exists ::env(VERBOSE) ] } {
@@ -48,7 +50,9 @@ proc fail_step { str } {
   global asparagus_current_step_type
   global asparagus_current_step
 
-  set msg "$asparagus_current_step_type $asparagus_current_step"
+  set str [ join "$asparagus_current_step" ]
+
+  set msg "$asparagus_current_step_type $str"
 
   if { [ string length $str ] } {
     set msg "$msg: $str"
@@ -69,12 +73,15 @@ proc fail_step { str } {
 
 }
 
+# print an unrecognized step to the output stream and call `fail'
 proc fail_unknown { } {
 
   global asparagus_current_step_type
   global asparagus_current_step
 
-  set msg "$asparagus_current_step_type $asparagus_current_step"
+  set str [ join "$asparagus_current_step" ]
+
+  set msg "$asparagus_current_step_type $str"
 
   send_log "MISS: $msg\n"
   if { [ info exists ::env(VERBOSE) ] } {

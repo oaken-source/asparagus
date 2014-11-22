@@ -26,9 +26,9 @@
 # used by "Given an executable"
 global asparagus_executable_path
 
-## the type of the latest executed step
+## the type of the last executed step
 # can be "Given" "When" or "Then"
-global asparagus_step_type
+global asparagus_last_step_type
 
 ## the actual type of the currently executing step
 # can be "Given" "  When" "  Then" or "  And"
@@ -37,3 +37,7 @@ global asparagus_current_step_type
 ## the string form of the current step
 # used by the *_send procs
 global asparagus_current_step
+
+## the known step definitions and their string representations
+# use register_step to add your own
+global asparagus_step_definitions

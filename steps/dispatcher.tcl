@@ -102,7 +102,7 @@ proc dispatch_step { args } {
 
 }
 
-proc register_step { func step } {
+proc asparagus_register_step { func step } {
 
   global asparagus_step_definitions
 

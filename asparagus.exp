@@ -26,7 +26,7 @@ source [file dirname [info script]]/lib/feedback.tcl
 source [file dirname [info script]]/lib/string.tcl
 source [file dirname [info script]]/lib/globals.tcl
 
-# include the step dispatcher - add calls to your step procs in here
+# include the step dispatcher
 source [file dirname [info script]]/steps/dispatcher.tcl
 
 # include the default step definitions

@@ -33,7 +33,8 @@ source [file dirname [info script]]/steps/dispatcher.tcl
 source [file dirname [info script]]/steps/default.tcl
 
 # add your custom step definitions here, or add them to a dedicated file
-# and source this file here.
+# and source this file here. Also take a look at steps/default.tcl for further
+# reference on step implementation.
 
 ### example step definition:
 # proc when_something_happens { args } {

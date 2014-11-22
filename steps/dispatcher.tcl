@@ -18,14 +18,11 @@
  #    along with this program.  If not, see <http://www.gnu.org/licenses/>.   #
  ##############################################################################
 
- # This script handles the step dispatching.
+ # This script handles the step dispatching and registration.
  ##############################################################################
 
-# this is the entry point to asparagus - each test should start with either
-# `given' or `Given'. Dispatch what is `given' here and call the corresponding
-# handler proc.
+# process a `given' step
 proc Given { args } { given {*}"$args" }
-
 proc given { args } {
 
   global asparagus_step_type
@@ -40,8 +37,8 @@ proc given { args } {
 
 }
 
+# process a `when' step
 proc When { args } { when {*}"$args" }
-
 proc when { args } {
 
   global asparagus_step_type
@@ -56,8 +53,8 @@ proc when { args } {
 
 }
 
+# process a `then' step
 proc Then { args } { then {*}"$args" }
-
 proc then { args } {
 
   global asparagus_step_type
@@ -72,8 +69,8 @@ proc then { args } {
 
 }
 
+#process an `and' step
 proc And { args } { and {*}"$args" }
-
 proc and { args } {
 
   global asparagus_step_type
@@ -87,6 +84,7 @@ proc and { args } {
 
 }
 
+# try and execute the proc associated with the current step
 proc dispatch_step { args } {
 
   global asparagus_step_definitions
@@ -102,6 +100,7 @@ proc dispatch_step { args } {
 
 }
 
+# register a new step for the dispatcher
 proc asparagus_register_step { func step } {
 
   global asparagus_step_definitions

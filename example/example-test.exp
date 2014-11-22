@@ -1,9 +1,5 @@
 
-set test_name "example-test"
-
-# exp_internal 1
-
-given an executable "ls"
+Given an executable "ls"
   when I run with parameters "-a"
   then I should see "asparagus.exp"
   and it should return 0

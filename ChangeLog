@@ -3,8 +3,8 @@
 
 	* lib/feedback.tcl: fixed output issue on fail_step
 	* steps/default.tcl: added new steps for snippet compilation
-	* examples/simple.exp: moved from example-test.exp
-	* examples/compile.exp: added
+	* example.tests/simple.exp: moved from examples/example-test.exp
+	* example.tests/compile.exp: added
 
 2014-11-22  Andreas Grapentin  <andreas@grapentin.org>
 

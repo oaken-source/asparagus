@@ -4,3 +4,4 @@ Given an executable "ls"
   then I should see "asparagus.exp"
   and it should return 0
 
+send_user "\n"

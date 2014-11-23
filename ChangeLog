@@ -1,5 +1,12 @@
 
-2014-11-11  Andreas Grapentin  <andreas@grapentin.org>
+2014-11-23  Andreas Grapentin  <andreas@grapentin.org>
+
+	* lib/feedback.tcl: fixed output issue on fail_step
+	* steps/default.tcl: added new steps for snippet compilation
+	* examples/simple.exp: moved from example-test.exp
+	* examples/compile.exp: added
+
+2014-11-22  Andreas Grapentin  <andreas@grapentin.org>
 
 	* asparagus.exp: reorganized imports and added custom step example
 	* example/example-test.exp: updated to new format (removed \\'s)

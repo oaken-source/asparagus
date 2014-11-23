@@ -42,7 +42,7 @@ Or mail us at <asparagus@grapentin.org>!
  projets, and how to write yor own tests. For a quick reference, take a look
  at the example test definition in example/example-text.exp, and run it via
 
-  $> VERBOSE=1 runtest asparagus.exp example/example-test.exp
+  $> DEJAGNU=asparagus.exp VERBOSE=1 runtest --tool example
 
  where the runtest binary is provided by DejaGnu.
 
@@ -66,7 +66,7 @@ Or mail us at <asparagus@grapentin.org>!
 
  To run a single test file, run the following command with dejagnu installed:
 
-  $> runtest asparagus.exp <testfile>
+  $> DEJAGNU=<path-to-asparagus.exp> runtest --tool <toolname>
 
  Use this schema to implement a `make check` step for your makefiles.
 
@@ -151,6 +151,10 @@ Or mail us at <asparagus@grapentin.org>!
     This step sets the currently used executable, which is used by the
     `When I run' family of steps.
 
+  Given the c code ?source?
+    Specifiy a source code snippet to be consumed by the `When I compile`
+    family of steps.
+
   When I run with parameters ?parameters?
     This step tries to spawn a process from the currently set executable
     while passing the given command line arguments.
@@ -160,6 +164,16 @@ Or mail us at <asparagus@grapentin.org>!
 
   When I send ?string?
     This step sends the given input to the stdin of the spawned process.
+
+  When I compile with cflags ?cflags?
+    This step attempts to compile the source code specified by a `Given the
+    c code` step into a binary using the given cflags, and sets the current
+    executable to this binary.
+
+  When I compile
+    This step attempts to compile the source code specified by a `Given the
+    c code` step into a binary and sets the current executable to this
+    binary.
 
   Then I should see ?string?
     This step asserts that the given string is part of the output of the

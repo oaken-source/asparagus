@@ -45,7 +45,7 @@ proc pass_step { } {
 }
 
 # print a failed step to the output stream, and call `fail'
-proc fail_step { str } {
+proc fail_step { err } {
 
   global asparagus_current_step_type
   global asparagus_current_step
@@ -54,8 +54,8 @@ proc fail_step { str } {
 
   set msg "$asparagus_current_step_type $str"
 
-  if { [ string length $str ] } {
-    set msg "$msg: $str"
+  if { [ string length $err ] } {
+    set msg "$msg: $err"
   }
 
   send_log "FAIL: $msg\n"

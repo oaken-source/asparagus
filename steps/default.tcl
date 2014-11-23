@@ -36,6 +36,20 @@ proc given_an_executable { exe } {
 }
 asparagus_register_step given_an_executable "given an executable"
 
+### given the c code ?source?
+#
+# sets the global `asparagus_source_code` to the given sorce and passes.
+proc given_the_c_code { code } {
+
+  global asparagus_source_code
+
+  set asparagus_source_code "$code"
+
+  pass_step
+
+}
+asparagus_register_step given_the_c_code "given the c code"
+
 ### when I run with parameters ?parameters?
 #
 # spawns the executable stored in `asparagus_executable_path`, which should be
@@ -120,6 +134,73 @@ proc when_I_send { str } {
 
 }
 asparagus_register_step when_I_send "when I send"
+
+### when I compile with cflags ?cflags?
+#
+# tries to compile the source code given in `asparagus_source_code` using a
+# call to `cc` with the given CFLAGS and sets the variable
+# `asparagus_executable_path` to the newly created binary.
+#
+# The step fails if the compilation fails, otherwise it passes
+proc when_I_compile_with_cflags { cflags } {
+
+  global asparagus_executable_path
+  global asparagus_source_code
+
+  set tmpdir [ file join "/tmp" "asparagus.[ pid ]" ]
+  file mkdir $tmpdir
+
+  if { [ catch {
+    spawn cc -x c -o $tmpdir/a.out $cflags -
+    after 10
+    send "$asparagus_source_code\r\x04"
+  } msg ] } {
+    faíl_step "$msg"
+    return
+  }
+
+  set asparagus_executable_path "$tmpdir/a.out"
+
+  pass_step
+
+}
+asparagus_register_step when_I_compile "when I compile"
+
+### when I compile
+#
+# tries to compile the source code given in `asparagus_source_code` using a
+# call to `cc` and sets the variable `asparagus_executable_path` to the
+# newly created binary.
+#
+# The step fails if the compilation fails, otherwise it passes
+proc when_I_compile { } {
+
+  global asparagus_executable_path
+  global asparagus_source_code
+
+  set tmpdir [ file join "/tmp" "asparagus.[ pid ]" ]
+  file mkdir $tmpdir
+
+  if { [ catch {
+    spawn cc -x c -o $tmpdir/a.out -
+    after 10
+    send "$asparagus_source_code\r\x04"
+
+    expect {
+      eof { }
+      timeout { }
+    }
+  } msg ] } {
+    faíl_step "$msg"
+    return
+  }
+
+  set asparagus_executable_path "$tmpdir/a.out"
+
+  pass_step
+
+}
+asparagus_register_step when_I_compile "when I compile"
 
 ### then I should see ?string?
 #

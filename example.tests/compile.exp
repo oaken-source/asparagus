@@ -1,0 +1,17 @@
+
+given the c code "
+    #include <stdio.h>
+
+    int
+    main (void)
+    {
+      printf(\"hello world\\n\");
+
+      return 0;
+    }"
+  when I compile
+  and I run
+  then I should see "hello world"
+  and it should return 0
+
+send_user "\n"

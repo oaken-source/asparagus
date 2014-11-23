@@ -49,6 +49,9 @@ proc fail_step { err } {
 
   global asparagus_current_step_type
   global asparagus_current_step
+  global asparagus_skipping
+
+  set asparagus_skipping 1
 
   set str [ join "$asparagus_current_step" ]
 
@@ -78,6 +81,9 @@ proc fail_unknown { } {
 
   global asparagus_current_step_type
   global asparagus_current_step
+  global asparagus_skipping
+
+  set asparagus_skipping 1
 
   set str [ join "$asparagus_current_step" ]
 
@@ -98,4 +104,24 @@ proc fail_unknown { } {
 
 }
 
+# print a skipped step to the output stream
+proc skip_step { } {
 
+  global asparagus_current_step_type
+  global asparagus_current_step
+
+  set str [ join "$asparagus_current_step" ]
+
+  set msg "$asparagus_current_step_type $str"
+
+  send_log "SKIP: $msg\n"
+  if { [ info exists ::env(VERBOSE) ] } {
+    puts "\033\[00;36m$msg\033\[0m"
+  } else {
+    puts -nonewline "\033\[00;36mS\033\[0m"
+    flush stdout
+  }
+
+  incr_count UNTESTED
+
+}

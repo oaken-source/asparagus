@@ -41,3 +41,6 @@ global asparagus_current_step
 ## the known step definitions and their string representations
 # use register_step to add your own
 global asparagus_step_definitions
+
+## if we are currently in skipping mode (there were errors)
+global asparagus_skipping

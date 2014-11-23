@@ -28,6 +28,9 @@ proc given { args } {
   global asparagus_step_type
   global asparagus_current_step_type
   global asparagus_current_step
+  global asparagus_skipping
+
+  set asparagus_skipping 0
 
   set asparagus_step_type "Given"
   set asparagus_current_step_type "Given"
@@ -88,6 +91,12 @@ proc and { args } {
 proc dispatch_step { args } {
 
   global asparagus_step_definitions
+  global asparagus_skipping
+
+  if { $asparagus_skipping } {
+    skip_step
+    return
+  }
 
   foreach { func step } $asparagus_step_definitions {
     if { [ string_starts_with "$args" "$step" ] } {

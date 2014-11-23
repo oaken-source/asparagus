@@ -144,6 +144,7 @@ asparagus_register_step when_I_send "when I send"
 # The step fails if the compilation fails, otherwise it passes
 proc when_I_compile_with_cflags { cflags } {
 
+  global asparagus_spawn_id
   global asparagus_executable_path
   global asparagus_source_code
 
@@ -151,7 +152,7 @@ proc when_I_compile_with_cflags { cflags } {
   file mkdir $tmpdir
 
   if { [ catch {
-    spawn cc -x c -o $tmpdir/a.out $cflags -
+    spawn cc -x c -o $tmpdir/a.out {*}$cflags -
     after 10
     send "$asparagus_source_code\r\x04"
   } msg ] } {
@@ -159,12 +160,13 @@ proc when_I_compile_with_cflags { cflags } {
     return
   }
 
+  set asparagus_spawn_id $spawn_id
   set asparagus_executable_path "$tmpdir/a.out"
 
   pass_step
 
 }
-asparagus_register_step when_I_compile "when I compile"
+asparagus_register_step when_I_compile_with_cflags "when I compile with cflags"
 
 ### when I compile
 #
@@ -175,6 +177,7 @@ asparagus_register_step when_I_compile "when I compile"
 # The step fails if the compilation fails, otherwise it passes
 proc when_I_compile { } {
 
+  global asparagus_spawn_id
   global asparagus_executable_path
   global asparagus_source_code
 
@@ -195,6 +198,7 @@ proc when_I_compile { } {
     return
   }
 
+  set asparagus_spawn_id $spawn_id
   set asparagus_executable_path "$tmpdir/a.out"
 
   pass_step

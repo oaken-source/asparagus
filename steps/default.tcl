@@ -216,6 +216,7 @@ asparagus_register_step when_I_compile "when I compile"
 proc then_I_should_see { str } {
 
   global asparagus_spawn_id
+  global asparagus_skipping
 
   if { ! [ string length $asparagus_spawn_id ] } {
     fail_step "not open"
@@ -229,13 +230,13 @@ proc then_I_should_see { str } {
     "$str" { }
     default {
       fail_step "not seen"
-      return
     }
 
   } } msg ] } {
     fail_step "$msg"
-    return
   }
+
+  if { $asparagus_skipping } { return }
 
   pass_step
 
@@ -252,6 +253,7 @@ asparagus_register_step then_I_should_see "then I should see"
 proc then_I_should_not_see { str } {
 
   global asparagus_spawn_id
+  global asparagus_skipping
 
   if { ! [ string length $asparagus_spawn_id ] } {
     fail_step "not open"
@@ -264,14 +266,14 @@ proc then_I_should_not_see { str } {
 
     "$str" {
       fail_step "seen"
-      return
     }
     default { }
 
   } } msg ] } {
     fail_step "$msg"
-    return
   }
+
+  if { $asparagus_skipping } { return }
 
   pass_step
 

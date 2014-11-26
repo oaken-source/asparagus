@@ -39,7 +39,7 @@ Or mail us at <asparagus@grapentin.org>!
  on top of this stack.
 
  The rest of this doucument describes how to use asparagus in your own
- projets, and how to write yor own tests. For a quick reference, take a look
+ projects, and how to write yor own tests. For a quick reference, take a look
  at the example test definition in example/example-text.exp, and run it via
 
   $> DEJAGNU=asparagus.exp VERBOSE=1 runtest --tool example

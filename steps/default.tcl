@@ -339,7 +339,7 @@ proc then_it_should_not_return { code } {
   set spawn_id $asparagus_spawn_id
 
   # consume input until eof, if any
-  if [catch { expect {
+  if [ catch { expect {
     eof { }
     timeout {
       fail_step "timed out"
@@ -348,7 +348,7 @@ proc then_it_should_not_return { code } {
   } } ] { }
 
   # wait for spawned process
-  lassign [wait $asparagus_spawn_id] wait_pid spawnid os_error_flag value
+  lassign [ wait $asparagus_spawn_id ] wait_pid spawnid os_error_flag value
 
   if { $os_error_flag != 0 || $value == $code } {
     fail_step "returned $os_error_flag : $value"

@@ -66,25 +66,13 @@ Or mail us at <asparagus@grapentin.org>!
 
  To run a single test file, run the following command with dejagnu installed:
 
-  $> DEJAGNU=<path-to-asparagus.exp> runtest --tool <toolname>
+  $> DEJAGNU=<path-to-asparagus.exp> runtest --tool <tool> --srcdir <srcdir>
 
  Use this schema to implement a `make check` step for your makefiles.
 
  Integration with autoconf/automake managed projects is straightforward as
- well. Just add the following block to your configure.ac:
-
-  if test x"$DEJAGNU" = x; then
-    DEJAGNU="\$(top_srcdir)/tests/asparagus.exp"
-  fi
-  AC_SUBST(DEJAGNU)
-
- and create at least one test directory, for example called `tests' to your
- project, and add `tests/Makefile' to AC_CONFIG_FILES, and add the tests
- directory to SUBDIRS in your top-level Makefile.am.
-
- Copy asparagus.exp, the lib directory and the steps directory into the tests
- directoy, and in the tests directory, create a file Makefile.am, with at
- least the following contents:
+ well. Just copy asparagus.exp and the lib/ and steps/ directory to your tests
+ directory and add the following block to Makefile.am in your tests directory:
 
   EXTRA_DIST = asparagus.exp lib/feedback.tcl lib/globals.tcl lib/string.tcl \
                steps/dispatcher.tcl steps/default.tcl \
@@ -92,13 +80,14 @@ Or mail us at <asparagus@grapentin.org>!
 
   AUTOMAKE_OPTIONS = dejagnu
 
+  DEJAGNU  = $(top_srcdir)<path to asparagus.exp>
+  DEJATOOL = <list of your test groups>
+
   export DEJAGNU
 
- In order to be executed, the tests files should be in subdirectories to the
- tests directory, named $DEJATOOL-<test_group>/<test_subgroup>.exe, where
- DEJATOOL defaults to the project name, unless you override it, and test_group
- and test_subgroup identify the tests defined in the test file semantically,
- which allows nice test grouping.
+ Group your test files in directories named <tool>.tests/ and add <tool> to
+ DEJATOOL in Makefile.am, if you want them executed. In the <tool>.tests/
+ directory, create your test files <group>.exp which contain your tests.
 
  The tests should be executed when you run `make check` or `make distcheck`.
 

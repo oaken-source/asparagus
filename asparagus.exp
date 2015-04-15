@@ -29,12 +29,15 @@ source [file dirname [info script]]/lib/globals.tcl
 # include the step dispatcher
 source [file dirname [info script]]/steps/dispatcher.tcl
 
+# include custom steps
+catch { source [file dirname [info script]]/steps/custom.tcl }
+
 # include the default step definitions
 source [file dirname [info script]]/steps/default.tcl
 
 # add your custom step definitions here, or add them to a dedicated file
-# and source this file here. Also take a look at steps/default.tcl for further
-# reference on step implementation.
+# and source this file here. (e.g. strps/custom.tcl) Also take a look at
+# steps/default.tcl for further reference on step implementation.
 
 ### example step definition:
 # proc when_something_happens { args } {
@@ -52,3 +55,4 @@ source [file dirname [info script]]/steps/default.tcl
 # given an executable "test"
 #   when something happens
 #   then ...
+### note that steps should probably be prefix-free to avoid mismatches!

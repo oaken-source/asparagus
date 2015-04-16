@@ -1,8 +1,16 @@
 
+# autotools generated files
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.*
+configure
+scripts/
+
 # runtest generated files
 *.log
 *.sum
 
 # locally used helper scripts
-package.sh
 integrate.sh

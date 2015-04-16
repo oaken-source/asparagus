@@ -15,3 +15,6 @@ asparagus-*
 # runtest generated files
 *.log
 *.sum
+
+# local helper scripts
+integrate.sh

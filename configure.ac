@@ -8,6 +8,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror gnu])
 
 AC_CONFIG_FILES([
   Makefile
+  asparagus.pc
 ])
 
 AC_OUTPUT

@@ -1,0 +1,8 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+pkgdatadir=@datadir@/asparagus
+
+Name: asparagus
+Description: a framework for human readable testing using expect/tcl
+Version: @VERSION@
+Libs: ${pkgdatadir}/asparagus.exp

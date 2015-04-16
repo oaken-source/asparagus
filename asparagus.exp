@@ -30,7 +30,7 @@ source [file dirname [info script]]/lib/globals.tcl
 source [file dirname [info script]]/steps/dispatcher.tcl
 
 # include custom steps
-catch { source [file dirname [info script]]/steps/custom.tcl }
+catch { source $env(ASPARAGUS_EXTRA_STEPS) }
 
 # include the default step definitions
 source [file dirname [info script]]/steps/default.tcl

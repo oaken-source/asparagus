@@ -8,3 +8,7 @@ nobase_dist_pkgdata_DATA = \
 EXTRA_DIST = \
   example.tests/compile.exp example.tests/simple.exp
 
+## pkgconfig integration
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = asparagus.pc
+

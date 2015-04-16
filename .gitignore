@@ -10,6 +10,8 @@ scripts/
 
 asparagus-*
 
+*.pc
+
 # runtest generated files
 *.log
 *.sum

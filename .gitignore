@@ -8,9 +8,8 @@ config.*
 configure
 scripts/
 
+asparagus-*
+
 # runtest generated files
 *.log
 *.sum
-
-# locally used helper scripts
-integrate.sh

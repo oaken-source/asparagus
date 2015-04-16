@@ -1,6 +1,6 @@
 
 AC_PREREQ([2.69])
-AC_INIT([asparagus], [0.6], [andreas@grapentin.org])
+AC_INIT([asparagus], [0.7], [andreas@grapentin.org])
 AC_CONFIG_SRCDIR([asparagus.exp])
 AC_CONFIG_AUX_DIR([scripts])
 

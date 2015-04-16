@@ -36,7 +36,7 @@ catch { source [file dirname [info script]]/steps/custom.tcl }
 source [file dirname [info script]]/steps/default.tcl
 
 # add your custom step definitions here, or add them to a dedicated file
-# and source this file here. (e.g. strps/custom.tcl) Also take a look at
+# and source this file here. (e.g. steps/custom.tcl) Also take a look at
 # steps/default.tcl for further reference on step implementation.
 
 ### example step definition:

@@ -1,4 +1,12 @@
 
+2015-04-16  Andreas Grapentin  <andreas@grapentin.org>
+
+	* asparagus.exp: auto sourcing of steps/custom.tcl
+	* lib/feedback.tcl: added feedback for skipped tests after error
+	* lib/globals.tcl: likewise
+	* steps/default.tcl: likewise, plus misc improvements
+	* steps/dispatcher.tcl: likewise
+
 2014-11-23  Andreas Grapentin  <andreas@grapentin.org>
 
 	* lib/feedback.tcl: fixed output issue on fail_step
